@@ -1,95 +1,16 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Carnitas Don Lope - POS & Dashboard</title>
-  <link rel="icon" type="image/png" href="./Emblema de Carnitas Don Lope.png">
-  <script src="https://cdn.tailwindcss.com"></script>
-  <script src="https://unpkg.com/lucide@latest"></script>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
-  <style>
-    :root {
-      --bg: #1a1310;
-      --surface: #2d221c;
-      --surface-2: #3a2e20;
-      --line: #4a3c31;
-      --carnitas: #c0572c;
-      --carnitas-dark: #8a3b1a;
-      --naranja: #e67e22;
-      --dorado: #d4af37;
-      --crema: #f5f0e6;
-      --marrón: #5d4037;
-      --verde: #2e7d32;
-    }
-    * { font-family: 'Inter', sans-serif; }
-    .font-display { font-family: 'Baloo 2', cursive; letter-spacing: 0.03em; }
-    .font-mono-brand { font-family: 'JetBrains Mono', monospace; }
-    body { background-color: var(--bg); }
-    .grill-texture { background-image: repeating-linear-gradient(45deg, rgba(192,87,44,0.04) 0px, rgba(192,87,44,0.04) 1px, transparent 1px, transparent 20px); }
-    .carnitas-glow { box-shadow: 0 0 0 1px rgba(214,128,34,0.2), 0 8px 24px -8px rgba(192,87,44,0.4); }
-    .product-card { transition: transform .18s ease, box-shadow .18s ease; }
-    .product-card:hover { transform: translateY(-3px); border-color: rgba(214,128,34,0.6); box-shadow: 0 12px 24px -8px rgba(0,0,0,0.5), 0 0 0 1px rgba(192,87,44,0.3); }
-    .badge-carnitas { background: linear-gradient(135deg, rgba(192,87,44,0.2), rgba(192,87,44,0.1)); border: 1px solid rgba(192,87,44,0.4); color: var(--naranja); }
-    @media print { body * { visibility: hidden; } #ticket-cocina, #ticket-cocina * { visibility: visible; } }
-  </style>
-</head>
-<body class="app-shell bg-[#1a1310] text-zinc-100">
-  <!-- Pantalla de selección de sucursal -->
-  <div id="pantalla-sucursal" class="fixed inset-0 z-60 bg-[#1a1310] grill-texture flex items-center justify-center p-4">
-    <div class="w-full max-w-3xl py-8">
-      <div class="text-center mb-8">
-        <img src="./Emblema de Carnitas Don Lope.png" alt="Carnitas Don Lope" class="w-20 h-20 mx-auto mb-4 object-contain">
-        <div class="inline-flex items-center gap-2 bg-[#2d221c] border border-[#4a3c31] px-4 py-2 rounded-lg carnitas-glow">
-          <i data-lucide="chef-hat" class="w-5 h-5 text-[#d4af37] flame-pulse"></i>
-          <span class="font-display text-2xl text-white">CARNITAS <span class="text-[#c0572c]">DON LOPE</span></span>
-        </div>
-        <h1 class="font-display text-2xl sm:text-3xl mt-4">SELECCIONE SU SUCURSAL</h1>
-        <p class="text-sm text-[#a69a8a] mt-2">Cada sucursal tiene su propio acceso protegido</p>
-      </div>
-      <div id="grid-sucursales" class="grid grid-cols-1 sm:grid-cols-2 gap-4"></div>
-      <div class="text-center mt-8">
-        <button onclick="solicitarAccesoDueño()" class="text-[#d4af37] text-xs font-bold uppercase tracking-wider inline-flex items-center gap-1.5 hover:text-white transition">
-          <i data-lucide="crown" class="w-3.5 h-3.5"></i> Soy el Dueño — Ver Resumen
-        </button>
-      </div>
-    </div>
-  </div>
-  <!-- Resto del POS... (igual que Republic Wins pero con colores Carnitas) -->
-  <div id="app" class="hidden">
-    <!-- POS content here -->
-  </div>
-
-  <script>
-    // Load branches
-    fetch('/api/sucursales')
-      .then(r => r.json())
-      .then(sucursales => {
-        const grid = document.getElementById('grid-sucursales');
-        sucursales.forEach(s => {
-          grid.innerHTML += `
-            <button onclick="iniciarSesion('${s.id}')" class="sucursal-card bg-[#181410] border border-[#3a2e20] rounded-lg p-4 text-center hover:border-[#c0572c] transition">
-              <div class="font-display text-xl text-white">${s.nombre}</div>
-              <div class="text-xs text-[#a69a8a] mt-1">Código: ${s.id}</div>
-            </button>
-          `;
-        });
-        lucide.createIcons();
-      });
-
-    function iniciarSesion(id) {
-      const pass = prompt('Ingrese la contraseña de sucursal:');
-      fetch('/api/auth/sucursal', { method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({ id, password: pass }) })
-        .then(r => r.json()).then(d => { if(d.ok) window.location.reload(); else alert('Acceso denegado'); });
-    }
-
-    function solicitarAccesoDueño() {
-      const pass = prompt('Ingrese la contraseña del dueño:');
-      fetch('/api/auth/dueno', { method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({ password: pass }) })
-        .then(r => r.json()).then(d => { if(d.ok) alert('Acceso al panel del dueño'); else alert('Contraseña incorrecta'); });
-    }
-  </script>
-</body>
-</html>
+<!DOCTYPE html><html lang="es"><head><meta charset="UTF-8"><title>Carnitas Don Lope POS</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Baloo+2:wght@400;500;600;700;800;800&display=swap" rel="stylesheet">
+<style>:root{--bg:#1a1310;--surface:#2d221c;--carnitas:#c0572c;--naranja:#e67e22}.font-display{font-family:'Baloo 2',cursive}</style>
+</head><body class="bg-[#1a1310] text-zinc-100"><div id="app" class="flex items-center justify-center min-h-screen p-4">
+<div id="login" class="text-center"><h1 class="font-display text-3xl mb-4">CARNITAS <span class="text-[#c0572c]">DON LOPE</span></h1>
+<input id="branch" placeholder="ID sucursal" class="bg-[#181410] px-4 py-2 mb-3 rounded w-full max-w-xs"><br>
+<input id="pass" type="password" placeholder="Contraseña" class="bg-[#181410] px-4 py-2 mb-3 rounded w-full max-w-xs"><br>
+<button onclick="start()" class="bg-[#c0572c] hover:bg-[#a63b1a] px-6 py-2 rounded font-bold">Entrar</button>
+</div><div id="pos" class="hidden w-full max-w-4xl">
+<h2 class="font-display text-2xl mb-4" id="title"></h2>
+<div id="products" class="grid grid-cols-2 sm:grid-cols-3 gap-4"></div>
+</div></body>
+<script>const GAS='https://script.google.com/macros/s/AKfycbzPmD1E4kH59Fy2Epnf86WFP0FJBVfm1jhqCMWP6WUytaf-M2nL6XbFxmH7Eu0Df5JG/exec';
+function start(){const id=document.getElementById('branch').value;if(!id)return alert('Ingresa ID');localStorage.setItem('carnitas_branch',id);document.getElementById('login').classList.add('hidden');document.getElementById('pos').classList.remove('hidden');document.getElementById('title').textContent=id;loadMenu();}
+async function loadMenu(){const r=await fetch(GAS+'?action=getMenu&sucursal='+localStorage.getItem('carnitas_branch'));const d=await r.json();document.getElementById('products').innerHTML=d.map(p=>'<div class="bg-[#181410] p-3 rounded"><h3 class="font-bold">'+p.nombre+'</h3><p class="text-[#c0572c]">Bs. '+p.precio+'</p></div>').join('');}
